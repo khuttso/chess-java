@@ -1,4 +1,4 @@
-
+package models;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 public abstract class Piece {
     private final int color;
-    private Square currentSquare;
+  private Square currentSquare;
     private BufferedImage img;
     
     public Piece(int color, Square initSq, String img_file) {
