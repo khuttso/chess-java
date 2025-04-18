@@ -1,19 +1,20 @@
 package models;
 
+import services.movements.BishopMovementStrategy;
+import services.movements.StandardPlayMoveStrategy;
+import services.movements.interfaces.MovementStrategyBase;
+import services.movements.interfaces.PlayMoveStrategyBase;
+
+import java.io.IOException;
 import java.util.List;
 
 public class Bishop extends Piece {
-
-    public Bishop(int color, Square initSq, String img_file) {
+    public Bishop(int color, Square initSq, String img_file) throws IOException {
         super(color, initSq, img_file);
     }
-    
-    @Override
-    public List<Square> getLegalMoves(Board b) {
-        Square[][] board = b.getSquareArray();
-        int x = this.getPosition().getXNum();
-        int y = this.getPosition().getYNum();
-        
-        return getDiagonalOccupations(board, x, y);
+
+    public void setStrategies(MovementStrategyBase movementStrategy, PlayMoveStrategyBase playMoveStrategyBase) throws IOException {
+        this.movementStrategy = movementStrategy;
+        this.playMoveStrategy = playMoveStrategyBase;
     }
 }

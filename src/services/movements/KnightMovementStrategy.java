@@ -1,12 +1,13 @@
-﻿package services;
+package services.movements;
 
 import models.Board;
 import models.Piece;
 import models.Square;
+import services.movements.interfaces.MovementStrategyBase;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//
 public class KnightMovementStrategy implements MovementStrategyBase {
 
     private final Piece knight;

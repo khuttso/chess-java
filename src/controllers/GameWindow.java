@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class GameWindow {
     
     
     public GameWindow(String blackName, String whiteName, int hh, 
-            int mm, int ss) {
+            int mm, int ss) throws IOException {
         
         blackClock = new Clock(hh, ss, mm);
         whiteClock = new Clock(hh, ss, mm);
@@ -121,7 +122,11 @@ public class GameWindow {
                                     JOptionPane.YES_NO_OPTION);
                             
                             if (n == JOptionPane.YES_OPTION) {
-                                new GameWindow(bn, wn, hh, mm, ss);
+                                try {
+                                    new GameWindow(bn, wn, hh, mm, ss);
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
                                 gameWindow.dispose();
                             } else gameWindow.dispose();
                         }
@@ -139,7 +144,11 @@ public class GameWindow {
                                     JOptionPane.YES_NO_OPTION);
                             
                             if (n == JOptionPane.YES_OPTION) {
-                                new GameWindow(bn, wn, hh, mm, ss);
+                                try {
+                                    new GameWindow(bn, wn, hh, mm, ss);
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
                                 gameWindow.dispose();
                             } else gameWindow.dispose();
                         }

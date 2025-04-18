@@ -1,6 +1,8 @@
 package models;
 
 import controllers.GameWindow;
+import services.movements.*;
+import services.movements.interfaces.MovementStrategyBase;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -10,6 +12,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +33,9 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	private static final String RESOURCES_WQUEEN_PNG = "/resources/wqueen.png";
 	private static final String RESOURCES_WPAWN_PNG = "/resources/wpawn.png";
 	private static final String RESOURCES_BPAWN_PNG = "/resources/bpawn.png";
-	
+
+    // DI BLOCKS
+//    private static final MovementStrategyBase bishopMovement = new BishopMovementStrategy()
 	// Logical and graphical representations of board
 	private final Square[][] board;
     private final GameWindow g;
@@ -48,7 +53,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     
     private CheckmateDetector cmd;
     
-    public Board(GameWindow g) {
+    public Board(GameWindow g) throws IOException {
         this.g = g;
         board = new Square[8][8];
         Bpieces = new LinkedList<Piece>();
@@ -84,35 +89,69 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
     }
 
-    private void initializePieces() {
+    private void initializePieces() throws IOException {
     	
         for (int x = 0; x < 8; x++) {
-            board[1][x].put(new Pawn(0, board[1][x], RESOURCES_BPAWN_PNG));
-            board[6][x].put(new Pawn(1, board[6][x], RESOURCES_WPAWN_PNG));
+            Pawn pawn1x = new Pawn(0, board[1][x], RESOURCES_BPAWN_PNG);
+            pawn1x.setStrategies(new PawnMovementStrategy(pawn1x, true), new StandardPlayMoveStrategy(pawn1x));
+            Pawn pawn6x =new Pawn(1, board[6][x], RESOURCES_WPAWN_PNG);
+            pawn6x.setStrategies(new PawnMovementStrategy(pawn6x, true), new StandardPlayMoveStrategy(pawn6x));
+            board[1][x].put(pawn1x);
+            board[6][x].put(pawn6x);
         }
-        
-        board[7][3].put(new Queen(1, board[7][3], RESOURCES_WQUEEN_PNG));
-        board[0][3].put(new Queen(0, board[0][3], RESOURCES_BQUEEN_PNG));
+
+        Queen q73 = new Queen(1, board[7][3], RESOURCES_WQUEEN_PNG);
+        Queen q03 = new Queen(0, board[0][3], RESOURCES_BQUEEN_PNG);
+        q73.setStrategies(new QueenMovementStrategy(q73), new StandardPlayMoveStrategy(q73));
+        q03.setStrategies(new QueenMovementStrategy(q03), new StandardPlayMoveStrategy(q03));
+        board[7][3].put(q73);
+        board[0][3].put(q03);
         
         King bk = new King(0, board[0][4], RESOURCES_BKING_PNG);
+        bk.setStrategies(new KingMovementStrategy(bk), new StandardPlayMoveStrategy(bk));
         King wk = new King(1, board[7][4], RESOURCES_WKING_PNG);
+        wk.setStrategies(new KingMovementStrategy(wk), new StandardPlayMoveStrategy(wk));
         board[0][4].put(bk);
         board[7][4].put(wk);
 
-        board[0][0].put(new Rook(0, board[0][0], RESOURCES_BROOK_PNG));
-        board[0][7].put(new Rook(0, board[0][7], RESOURCES_BROOK_PNG));
-        board[7][0].put(new Rook(1, board[7][0], RESOURCES_WROOK_PNG));
-        board[7][7].put(new Rook(1, board[7][7], RESOURCES_WROOK_PNG));
+        Rook rook00 = new Rook(0, board[0][0], RESOURCES_BROOK_PNG);
+        Rook rook07 = new Rook(0, board[0][7], RESOURCES_BROOK_PNG);
+        Rook rook70 = new Rook(1, board[7][0], RESOURCES_WROOK_PNG);
+        Rook rook77 = new Rook(1, board[7][7], RESOURCES_WROOK_PNG);
+        rook00.setStrategies(new RookMovementStrategy(rook00), new StandardPlayMoveStrategy(rook00));
+        rook07.setStrategies(new RookMovementStrategy(rook07), new StandardPlayMoveStrategy(rook07));
+        rook70.setStrategies(new RookMovementStrategy(rook70), new StandardPlayMoveStrategy(rook70));
+        rook77.setStrategies(new RookMovementStrategy(rook77), new StandardPlayMoveStrategy(rook77));
+        board[0][0].put(rook00);
+        board[0][7].put(rook07);
+        board[7][0].put(rook70);
+        board[7][7].put(rook77);
 
-        board[0][1].put(new Knight(0, board[0][1], RESOURCES_BKNIGHT_PNG));
-        board[0][6].put(new Knight(0, board[0][6], RESOURCES_BKNIGHT_PNG));
-        board[7][1].put(new Knight(1, board[7][1], RESOURCES_WKNIGHT_PNG));
-        board[7][6].put(new Knight(1, board[7][6], RESOURCES_WKNIGHT_PNG));
+        Knight n01 = new Knight(0, board[0][1], RESOURCES_BKNIGHT_PNG);
+        Knight n06 = new Knight(0, board[0][6], RESOURCES_BKNIGHT_PNG);
+        Knight n71 = new Knight(1, board[7][1], RESOURCES_WKNIGHT_PNG);
+        Knight n76 = new Knight(1, board[7][6], RESOURCES_WKNIGHT_PNG);
+        n01.setStrategies(new KnightMovementStrategy(n01), new StandardPlayMoveStrategy(n01));
+        n06.setStrategies(new KnightMovementStrategy(n06), new StandardPlayMoveStrategy(n06));
+        n71.setStrategies(new KnightMovementStrategy(n71), new StandardPlayMoveStrategy(n71));
+        n76.setStrategies(new KnightMovementStrategy(n76), new StandardPlayMoveStrategy(n76));
+        board[0][1].put(n01);
+        board[0][6].put(n06);
+        board[7][1].put(n71);
+        board[7][6].put(n76);
 
-        board[0][2].put(new Bishop(0, board[0][2], RESOURCES_BBISHOP_PNG));
-        board[0][5].put(new Bishop(0, board[0][5], RESOURCES_BBISHOP_PNG));
-        board[7][2].put(new Bishop(1, board[7][2], RESOURCES_WBISHOP_PNG));
-        board[7][5].put(new Bishop(1, board[7][5], RESOURCES_WBISHOP_PNG));
+        Bishop b02 = new Bishop(0, board[0][2], RESOURCES_BBISHOP_PNG);
+        Bishop b05 = new Bishop(0, board[0][5], RESOURCES_BBISHOP_PNG);
+        Bishop b72 = new Bishop(1, board[7][2], RESOURCES_WBISHOP_PNG);
+        Bishop b75 = new Bishop(1, board[7][5], RESOURCES_WBISHOP_PNG);
+        b02.setStrategies(new BishopMovementStrategy(b02), new StandardPlayMoveStrategy(b02));
+        b05.setStrategies(new BishopMovementStrategy(b05), new StandardPlayMoveStrategy(b05));
+        b72.setStrategies(new BishopMovementStrategy(b72), new StandardPlayMoveStrategy(b72));
+        b75.setStrategies(new BishopMovementStrategy(b75), new StandardPlayMoveStrategy(b75));
+        board[0][2].put(b02);
+        board[0][5].put(b05);
+        board[7][2].put(b72);
+        board[7][5].put(b75);
         
         
         for(int y = 0; y < 2; y++) {
@@ -129,6 +168,9 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         return this.board;
     }
 
+    public void capturePiece(Square destination, Piece piece) {
+        // TODO - Implementation
+    }
     public boolean getTurn() {
         return whiteTurn;
     }

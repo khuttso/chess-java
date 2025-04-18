@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -133,8 +134,12 @@ public class StartMenu implements Runnable {
                 int hh = Integer.parseInt((String) hours.getSelectedItem());
                 int mm = Integer.parseInt((String) minutes.getSelectedItem());
                 int ss = Integer.parseInt((String) seconds.getSelectedItem());
-                
-                new GameWindow(bn, wn, hh, mm, ss);
+
+                try {
+                    new GameWindow(bn, wn, hh, mm, ss);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 startWindow.dispose();
             }
           });

@@ -1,14 +1,21 @@
 package models;
 
+import services.movements.interfaces.MovementStrategyBase;
+import services.movements.interfaces.PlayMoveStrategyBase;
+
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Knight extends Piece {
 
-    public Knight(int color, Square initSq, String img_file) {
+    public Knight(int color, Square initSq, String img_file) throws IOException {
         super(color, initSq, img_file);
     }
-
+    public void setStrategies(MovementStrategyBase movementStrategy, PlayMoveStrategyBase playMoveStrategyBase) {
+        this.movementStrategy = movementStrategy;
+        this.playMoveStrategy = playMoveStrategyBase;
+    }
     @Override
     public List<Square> getLegalMoves(Board b) {
         LinkedList<Square> legalMoves = new LinkedList<Square>();

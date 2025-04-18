@@ -1,15 +1,24 @@
 package models;
 
+import services.movements.interfaces.MovementStrategyBase;
+import services.movements.interfaces.PlayMoveStrategyBase;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
 
 public class Pawn extends Piece {
     private boolean wasMoved;
     
-    public Pawn(int color, Square initSq, String img_file) {
+    public Pawn(int color, Square initSq, String img_file) throws IOException {
         super(color, initSq, img_file);
     }
-    
+
+    public void setStrategies(MovementStrategyBase movementStrategy, PlayMoveStrategyBase playMoveStrategy) {
+        this.movementStrategy = movementStrategy;
+        this.playMoveStrategy = playMoveStrategy;
+    }
+
     @Override
     public boolean move(Square fin) {
         boolean b = super.move(fin);

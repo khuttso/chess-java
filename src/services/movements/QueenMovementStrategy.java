@@ -1,14 +1,16 @@
-﻿package services;
+package services.movements;
 
 import models.Board;
 import models.Piece;
 import models.Square;
+import services.helpers.MovesLogic;
+import services.movements.interfaces.MovementStrategyBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueenMovementStrategy implements MovementStrategyBase{
-
+public class QueenMovementStrategy implements MovementStrategyBase {
+// 
     private final Piece queen;
 
     public QueenMovementStrategy(Piece queen) {
